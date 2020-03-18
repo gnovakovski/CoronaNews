@@ -1,0 +1,3 @@
+rootProject.name='CoronaNews'
+include ':app'
+include ':app:networkmodule'
