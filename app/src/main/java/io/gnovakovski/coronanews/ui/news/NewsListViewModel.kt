@@ -11,12 +11,14 @@ import io.gnovakovski.coronanews.base.BaseViewModel
 import io.gnovakovski.coronanews.model.Article
 import io.gnovakovski.coronanews.model.ArticlesDao
 import io.gnovakovski.coronanews.network.NewsApi
+import io.gnovakovski.coronanews.utils.API_TOKEN
 import javax.inject.Inject
 
 class NewsListViewModel(private val articlesDao: ArticlesDao): BaseViewModel(){
     @Inject
     lateinit var newsApi: NewsApi
-    val newsListAdapter: NewsListAdapter = NewsListAdapter()
+    val newsListAdapter: NewsListAdapter =
+        NewsListAdapter()
 
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
     val errorMessage:MutableLiveData<Int> = MutableLiveData()
@@ -34,25 +36,16 @@ class NewsListViewModel(private val articlesDao: ArticlesDao): BaseViewModel(){
     }
 
     private fun loadNews(){
-        subscription = Observable.fromCallable { articlesDao.all }
-                .concatMap {
-                    dbPostList ->
-                        if(dbPostList.isEmpty())
-                            newsApi.getNews().concatMap {
-                                            apiNewsList -> articlesDao.insertAll(*apiNewsList.articles.toTypedArray())
-                                 Observable.just(apiNewsList.articles)
-                                       }
-                        else
-                            Observable.just(dbPostList)
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { onRetrieveNewsListStart() }
-                .doOnTerminate { onRetrieveNewsListFinish() }
-                .subscribe(
-                        { result -> onRetrieveNewsListSuccess(result) },
-                        { onRetrieveNewsListError() }
-                )
+        subscription = newsApi.getNews("covid", "pt", "publishedAt", "1", API_TOKEN)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { onRetrieveNewsListStart() }
+            .doOnTerminate { onRetrieveNewsListFinish() }
+            .subscribe(
+                // Add result
+                { result -> onRetrieveNewsListSuccess(result.articles) },
+                { onRetrieveNewsListError() }
+            )
     }
 
     private fun onRetrieveNewsListStart(){

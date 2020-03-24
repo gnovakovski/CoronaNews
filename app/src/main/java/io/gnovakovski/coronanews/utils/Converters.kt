@@ -12,7 +12,7 @@ class Converters {
         @TypeConverter
         @JvmStatic
         fun toInstant(value: String): Source {
-            return Source(0, value)
+            return Source(value)
         }
     }
 }

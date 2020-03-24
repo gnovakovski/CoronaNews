@@ -10,7 +10,7 @@ import io.gnovakovski.coronanews.ui.news.NewsListViewModel
 class ViewModelFactory(private val activity: AppCompatActivity): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewsListViewModel::class.java)) {
-            val db = Room.databaseBuilder(activity.applicationContext, AppDatabase::class.java, "news").build()
+            val db = Room.databaseBuilder(activity.applicationContext, AppDatabase::class.java, "articles").build()
             @Suppress("UNCHECKED_CAST")
             return NewsListViewModel(db.articlesDao()) as T
         }
