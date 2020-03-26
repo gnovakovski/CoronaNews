@@ -11,7 +11,7 @@ class NewsViewModel: BaseViewModel() {
 
     fun bind(article: Article){
         articleTitle.value = article.title
-        articleDomain.value = article.source.name
+        articleDomain.value = article.source!!.name
     }
 
     fun getArticleTitle():MutableLiveData<String>{

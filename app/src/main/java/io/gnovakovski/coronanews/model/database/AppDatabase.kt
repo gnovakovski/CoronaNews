@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import io.gnovakovski.coronanews.model.Article
 import io.gnovakovski.coronanews.model.ArticlesDao
+import io.gnovakovski.coronanews.model.News
 import io.gnovakovski.coronanews.utils.Converters
 
 @Database(entities = arrayOf(Article::class), version = 1)

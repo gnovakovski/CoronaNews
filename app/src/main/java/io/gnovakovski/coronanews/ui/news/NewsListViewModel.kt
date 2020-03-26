@@ -2,6 +2,7 @@ package io.gnovakovski.coronanews.ui.news
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import io.gnovakovski.coronanews.R
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,6 +13,8 @@ import io.gnovakovski.coronanews.model.Article
 import io.gnovakovski.coronanews.model.ArticlesDao
 import io.gnovakovski.coronanews.network.NewsApi
 import io.gnovakovski.coronanews.utils.API_TOKEN
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class NewsListViewModel(private val articlesDao: ArticlesDao): BaseViewModel(){
@@ -59,6 +62,11 @@ class NewsListViewModel(private val articlesDao: ArticlesDao): BaseViewModel(){
 
     private fun onRetrieveNewsListSuccess(articleList:List<Article>){
         newsListAdapter.updateNewsList(articleList)
+        GlobalScope.launch {
+            for(article in articleList) {
+                articlesDao.insertAll(article)
+            }
+        }
     }
 
     private fun onRetrieveNewsListError(){

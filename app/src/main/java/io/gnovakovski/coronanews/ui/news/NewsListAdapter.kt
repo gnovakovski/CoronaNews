@@ -39,9 +39,7 @@ class NewsListAdapter: RecyclerView.Adapter<NewsListAdapter.ViewHolder>() {
             viewModel.bind(article)
             binding.root.setOnClickListener{
                 val intent = Intent(binding.root.context, DetailActivity::class.java)
-                intent.putExtra("title", article.title)
-                intent.putExtra("url", article.url)
-                intent.putExtra("source", article.source.name)
+                intent.putExtra("id", article.title)
                 binding.root.context.startActivity(intent)
             }
             binding.viewModel = viewModel

@@ -23,7 +23,7 @@ class NewsListActivity: AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_news_list)
         binding.postList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(this, "", "", "")).get(NewsListViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, ViewModelFactory(this, "")).get(NewsListViewModel::class.java)
         viewModel.errorMessage.observe(this, Observer {
             errorMessage -> if(errorMessage != null) showError(errorMessage) else hideError()
         })
