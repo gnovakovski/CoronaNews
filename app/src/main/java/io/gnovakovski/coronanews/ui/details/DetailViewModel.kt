@@ -1,5 +1,6 @@
 package io.gnovakovski.coronanews.ui.details
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import io.gnovakovski.coronanews.base.BaseViewModel
 import io.gnovakovski.coronanews.model.ArticlesDao
@@ -11,6 +12,7 @@ class DetailViewModel(private val articlesDao: ArticlesDao, private val id: Stri
     val titleText: MutableLiveData<String> = MutableLiveData()
     val urlText: MutableLiveData<String> = MutableLiveData()
     val sourceText: MutableLiveData<String> = MutableLiveData()
+    val resultImageUrl = ObservableField<String>()
 
     init {
         GlobalScope.launch {
@@ -22,6 +24,7 @@ class DetailViewModel(private val articlesDao: ArticlesDao, private val id: Stri
            titleText.postValue(article.title)
            urlText.postValue(article.url)
            sourceText.postValue(article.source!!.name)
+           resultImageUrl.set(article.urlToImage);
      }
 
 }

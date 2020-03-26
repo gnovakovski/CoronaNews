@@ -1,7 +1,9 @@
 package io.gnovakovski.coronanews.ui.news
 
 
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -10,6 +12,7 @@ import io.gnovakovski.coronanews.R
 import io.gnovakovski.coronanews.databinding.ItemNewsBinding
 import io.gnovakovski.coronanews.model.Article
 import io.gnovakovski.coronanews.ui.details.DetailActivity
+import io.gnovakovski.coronanews.utils.extension.getParentActivity
 
 class NewsListAdapter: RecyclerView.Adapter<NewsListAdapter.ViewHolder>() {
     private lateinit var newsList:List<Article>
@@ -40,7 +43,12 @@ class NewsListAdapter: RecyclerView.Adapter<NewsListAdapter.ViewHolder>() {
             binding.root.setOnClickListener{
                 val intent = Intent(binding.root.context, DetailActivity::class.java)
                 intent.putExtra("id", article.title)
-                binding.root.context.startActivity(intent)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    binding.root.context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(binding.root.getParentActivity()).toBundle())
+                }else{
+                    binding.root.context.startActivity(intent)
+                }
+
             }
             binding.viewModel = viewModel
         }

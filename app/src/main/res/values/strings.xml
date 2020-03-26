@@ -3,4 +3,5 @@
 
     <string name="retry">Retry</string>
     <string name="post_error">An error occurred while loading the news</string>
+    <string name="corona_news">CoronaNews</string>
 </resources>

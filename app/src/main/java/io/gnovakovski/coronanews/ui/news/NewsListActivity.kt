@@ -21,7 +21,7 @@ class NewsListActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_news_list)
-        binding.postList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.postList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         viewModel = ViewModelProviders.of(this, ViewModelFactory(this, "")).get(NewsListViewModel::class.java)
         viewModel.errorMessage.observe(this, Observer {
