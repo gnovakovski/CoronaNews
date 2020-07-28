@@ -1,4 +1,5 @@
-# Corona News *(Em Andamento)*
+# Corona News
+![](/app/src/main/res/drawable-v24/news_icon.png)
 
 Pequeno projeto em Android com MVVM para mostrar as últimas notícias (de fontes confiáveis), sobre o Covid-19. 
 
