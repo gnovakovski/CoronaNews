@@ -1,5 +1,5 @@
 # Corona News
-![](/app/src/main/res/drawable-v24/news_icon.png =100x20)
+<img src="/app/src/main/res/drawable-v24/news_icon.png" width="220" height="220">
 
 Pequeno projeto em Android com MVVM para mostrar as últimas notícias (de fontes confiáveis), sobre o Covid-19. 
 
