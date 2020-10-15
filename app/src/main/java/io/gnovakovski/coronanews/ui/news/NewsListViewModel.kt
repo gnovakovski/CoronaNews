@@ -2,34 +2,32 @@ package io.gnovakovski.coronanews.ui.news
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import io.gnovakovski.coronanews.R
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.gnovakovski.coronanews.base.BaseViewModel
 import io.gnovakovski.coronanews.model.Article
 import io.gnovakovski.coronanews.model.ArticlesDao
 import io.gnovakovski.coronanews.network.NewsApi
 import io.gnovakovski.coronanews.utils.API_TOKEN
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class NewsListViewModel(private val articlesDao: ArticlesDao): BaseViewModel(){
+class NewsListViewModel(private val articlesDao: ArticlesDao) : BaseViewModel() {
     @Inject
     lateinit var newsApi: NewsApi
     val newsListAdapter: NewsListAdapter =
         NewsListAdapter()
 
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
-    val errorMessage:MutableLiveData<Int> = MutableLiveData()
+    val errorMessage: MutableLiveData<Int> = MutableLiveData()
     val errorClickListener = View.OnClickListener { loadNews() }
 
     private lateinit var subscription: Disposable
 
-    init{
+    init {
         loadNews()
     }
 
@@ -38,7 +36,7 @@ class NewsListViewModel(private val articlesDao: ArticlesDao): BaseViewModel(){
         subscription.dispose()
     }
 
-    private fun loadNews(){
+    private fun loadNews() {
         subscription = newsApi.getNews("covid", "pt", "publishedAt", "1", API_TOKEN)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -51,25 +49,25 @@ class NewsListViewModel(private val articlesDao: ArticlesDao): BaseViewModel(){
             )
     }
 
-    private fun onRetrieveNewsListStart(){
+    private fun onRetrieveNewsListStart() {
         loadingVisibility.value = View.VISIBLE
         errorMessage.value = null
     }
 
-    private fun onRetrieveNewsListFinish(){
+    private fun onRetrieveNewsListFinish() {
         loadingVisibility.value = View.GONE
     }
 
-    private fun onRetrieveNewsListSuccess(articleList:List<Article>){
+    private fun onRetrieveNewsListSuccess(articleList: List<Article>) {
         newsListAdapter.updateNewsList(articleList)
         GlobalScope.launch {
-            for(article in articleList) {
+            for (article in articleList) {
                 articlesDao.insertAll(article)
             }
         }
     }
 
-    private fun onRetrieveNewsListError(){
+    private fun onRetrieveNewsListError() {
         errorMessage.value = R.string.post_error
     }
 }
