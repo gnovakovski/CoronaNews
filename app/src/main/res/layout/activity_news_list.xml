@@ -5,12 +5,15 @@
         <variable
             name="viewModel"
             type="io.gnovakovski.coronanews.ui.news.NewsListViewModel" />
+
+        <variable
+            name="adapter"
+            type="io.gnovakovski.coronanews.ui.news.NewsListAdapter" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
+        
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
@@ -58,7 +61,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            app:adapter="@{viewModel.getNewsListAdapter()}"
+            app:adapter="@{adapter}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

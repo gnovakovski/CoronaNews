@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="io.gnovakovski.coronanews.ui.news.NewsViewModel" />
+            name="item"
+            type="io.gnovakovski.coronanews.model.Article" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -42,7 +42,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:scaleType="center"
-                app:imageUrl="@{viewModel.getResultImageUrl}"
+                app:imageUrl="@{item.urlToImage}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="H,9.5:16"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +78,7 @@
                 app:layout_constraintEnd_toEndOf="@id/guideline_right"
                 app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toTopOf="parent"
-                app:mutableText="@{viewModel.getArticleTitle()}" />
+                app:text="@{item.title}" />
 
             <TextView
                 android:id="@+id/post_body"
@@ -99,7 +99,7 @@
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@+id/post_title"
-                app:mutableText="@{viewModel.getArticleDomain()}" />
+                app:text="@{item.source.name}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

@@ -2,29 +2,28 @@ package io.gnovakovski.coronanews.ui.details
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
-import io.gnovakovski.coronanews.base.BaseViewModel
-import io.gnovakovski.coronanews.model.ArticlesDao
-import kotlinx.coroutines.GlobalScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import io.gnovakovski.coronanews.data.NewsRepository
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailViewModel(private val articlesDao: ArticlesDao, private val id: String) : BaseViewModel() {
+class DetailViewModel @Inject constructor(
+    private val newsRepository: NewsRepository
+) : ViewModel() {
 
     val titleText: MutableLiveData<String> = MutableLiveData()
     val urlText: MutableLiveData<String> = MutableLiveData()
     val sourceText: MutableLiveData<String> = MutableLiveData()
     val resultImageUrl = ObservableField<String>()
 
-    init {
-        GlobalScope.launch {
-            loadInformation(id)
+    fun loadInformation(title: String) {
+        viewModelScope.launch {
+            val article = newsRepository.getArticle(title)
+            titleText.postValue(article.title)
+            urlText.postValue(article.url)
+            sourceText.postValue(article.source!!.name)
+            resultImageUrl.set(article.urlToImage)
         }
     }
-     fun loadInformation(id: String) {
-           val article = articlesDao.getArticle(id)
-           titleText.postValue(article.title)
-           urlText.postValue(article.url)
-           sourceText.postValue(article.source!!.name)
-           resultImageUrl.set(article.urlToImage);
-     }
-
 }
