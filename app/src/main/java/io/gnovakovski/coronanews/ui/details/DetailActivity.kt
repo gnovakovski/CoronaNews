@@ -1,26 +1,28 @@
 package io.gnovakovski.coronanews.ui.details
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
+import io.gnovakovski.coronanews.CustomApplication
 import io.gnovakovski.coronanews.R
 import io.gnovakovski.coronanews.databinding.ActivityDetailBinding
-import io.gnovakovski.coronanews.injection.ViewModelFactory
+import javax.inject.Inject
 
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-    private lateinit var viewModel: DetailViewModel
 
+    @Inject
+    lateinit var viewModel: DetailViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (applicationContext as CustomApplication).appComponent.inject(this)
+
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
-        val id= intent.getStringExtra("id")
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(this, id)).get(DetailViewModel::class.java)
+        val id = intent.getStringExtra("id")
+        viewModel.loadInformation(id)
+
         binding.viewModel = viewModel
     }
-
-
 }

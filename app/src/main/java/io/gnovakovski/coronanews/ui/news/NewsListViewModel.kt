@@ -2,27 +2,24 @@ package io.gnovakovski.coronanews.ui.news
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.gnovakovski.coronanews.R
-import io.gnovakovski.coronanews.base.BaseViewModel
+import io.gnovakovski.coronanews.data.NewsRepository
 import io.gnovakovski.coronanews.model.Article
-import io.gnovakovski.coronanews.model.ArticlesDao
-import io.gnovakovski.coronanews.network.NewsApi
-import io.gnovakovski.coronanews.utils.API_TOKEN
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class NewsListViewModel(private val articlesDao: ArticlesDao) : BaseViewModel() {
-    @Inject
-    lateinit var newsApi: NewsApi
-    val newsListAdapter: NewsListAdapter =
-        NewsListAdapter()
+class NewsListViewModel @Inject constructor(
+    private val newsRepository: NewsRepository
+) : ViewModel() {
 
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
     val errorMessage: MutableLiveData<Int> = MutableLiveData()
+    val newsList: MutableLiveData<List<Article>> = MutableLiveData()
     val errorClickListener = View.OnClickListener { loadNews() }
 
     private lateinit var subscription: Disposable
@@ -37,7 +34,7 @@ class NewsListViewModel(private val articlesDao: ArticlesDao) : BaseViewModel() 
     }
 
     private fun loadNews() {
-        subscription = newsApi.getNews("covid", "pt", "publishedAt", "1", API_TOKEN)
+        subscription = newsRepository.getNews()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { onRetrieveNewsListStart() }
@@ -59,11 +56,10 @@ class NewsListViewModel(private val articlesDao: ArticlesDao) : BaseViewModel() 
     }
 
     private fun onRetrieveNewsListSuccess(articleList: List<Article>) {
-        newsListAdapter.updateNewsList(articleList)
-        GlobalScope.launch {
-            for (article in articleList) {
-                articlesDao.insertAll(article)
-            }
+        newsList.value = articleList
+
+        viewModelScope.launch {
+            newsRepository.saveArticleList(articleList)
         }
     }
 

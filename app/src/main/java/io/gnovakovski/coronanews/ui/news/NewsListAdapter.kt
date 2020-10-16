@@ -14,11 +14,16 @@ import io.gnovakovski.coronanews.model.Article
 import io.gnovakovski.coronanews.ui.details.DetailActivity
 import io.gnovakovski.coronanews.utils.extension.getParentActivity
 
-class NewsListAdapter: RecyclerView.Adapter<NewsListAdapter.ViewHolder>() {
-    private lateinit var newsList:List<Article>
+class NewsListAdapter : RecyclerView.Adapter<NewsListAdapter.ViewHolder>() {
+    private lateinit var newsList: List<Article>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding: ItemNewsBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_news, parent, false)
+        val binding: ItemNewsBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.item_news,
+            parent,
+            false
+        )
         return ViewHolder(binding)
     }
 
@@ -27,30 +32,31 @@ class NewsListAdapter: RecyclerView.Adapter<NewsListAdapter.ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return if(::newsList.isInitialized) newsList.size else 0
+        return if (::newsList.isInitialized) newsList.size else 0
     }
 
-    fun updateNewsList(postList:List<Article>){
+    fun updateNewsList(postList: List<Article>) {
         this.newsList = postList
         notifyDataSetChanged()
     }
 
-    class ViewHolder(private val binding: ItemNewsBinding):RecyclerView.ViewHolder(binding.root){
-        private val viewModel = NewsViewModel()
-
-        fun bind(article: Article){
-            viewModel.bind(article)
-            binding.root.setOnClickListener{
+    class ViewHolder(private val binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(article: Article) {
+            binding.root.setOnClickListener {
                 val intent = Intent(binding.root.context, DetailActivity::class.java)
                 intent.putExtra("id", article.title)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    binding.root.context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(binding.root.getParentActivity()).toBundle())
-                }else{
+                    binding.root.context.startActivity(
+                        intent,
+                        ActivityOptions.makeSceneTransitionAnimation(binding.root.getParentActivity())
+                            .toBundle()
+                    )
+                } else {
                     binding.root.context.startActivity(intent)
                 }
 
             }
-            binding.viewModel = viewModel
+            binding.item = article
         }
     }
 }

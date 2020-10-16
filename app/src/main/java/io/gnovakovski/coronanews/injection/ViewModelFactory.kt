@@ -1,26 +1,31 @@
 package io.gnovakovski.coronanews.injection
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
-import io.gnovakovski.coronanews.model.database.AppDatabase
-import io.gnovakovski.coronanews.ui.details.DetailViewModel
-import io.gnovakovski.coronanews.ui.news.NewsListViewModel
+import javax.inject.Inject
+import javax.inject.Provider
 
-class ViewModelFactory(private val activity: AppCompatActivity, val id: String): ViewModelProvider.Factory{
+class ViewModelProviderFactory @Inject constructor(
+    private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
+) : ViewModelProvider.Factory {
+
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NewsListViewModel::class.java)) {
-            val db = Room.databaseBuilder(activity.applicationContext, AppDatabase::class.java, "articles").build()
-            @Suppress("UNCHECKED_CAST")
-            return NewsListViewModel(db.articlesDao()) as T
+        var creator: Provider<out ViewModel>? = creators[modelClass]
+        if (creator == null) {
+            for ((key, value) in creators) {
+                if (modelClass.isAssignableFrom(key)) {
+                    creator = value
+                    break
+                }
+            }
         }
-        else if(modelClass.isAssignableFrom(DetailViewModel::class.java)){
-            val db = Room.databaseBuilder(activity.applicationContext, AppDatabase::class.java, "articles").build()
-            @Suppress("UNCHECKED_CAST")
-            return DetailViewModel(db.articlesDao(), id) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        requireNotNull(creator) { "unknown model class $modelClass" }
 
+        return try {
+            @Suppress("UNCHECKED_CAST")
+            creator.get() as T
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
     }
 }
