@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.snackbar.Snackbar
 import io.gnovakovski.coronanews.CustomApplication
 import io.gnovakovski.coronanews.R
@@ -20,6 +22,7 @@ class NewsListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNewsListBinding
     private var errorSnackbar: Snackbar? = null
     private val newsListAdapter: NewsListAdapter = NewsListAdapter()
+    private val tributeSnapHelper: SnapHelper = PagerSnapHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (applicationContext as CustomApplication).appComponent.inject(this)
@@ -31,7 +34,7 @@ class NewsListActivity : AppCompatActivity() {
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.adapter = newsListAdapter
         binding.viewModel = viewModel
-
+        tributeSnapHelper.attachToRecyclerView(binding.postList)
         viewModel.errorMessage.observe(this, Observer { errorMessage ->
             if (errorMessage != null) showError(errorMessage) else hideError()
         })
